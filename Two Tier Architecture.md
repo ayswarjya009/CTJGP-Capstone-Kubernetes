@@ -6,21 +6,21 @@ This lab guide walks you through deploying Nextcloud with a PostgreSQL backend o
 
 ✅ A running Kubernetes cluster (minikube, kind, EKS, GKE, etc.)✅ kubectl configured for your cluster✅ (Optional) Ingress controller installed if you plan to use Ingress
 
-Step 1: Create Namespace
-
+### Step 1: Create Namespace
+```yaml
 apiVersion: v1
 kind: Namespace
 metadata:
   name: nextcloud
-
+```
 Apply:
-
+```
 kubectl apply -f namespace.yaml
-
-Step 2: Create Persistent Volume Claims (PVCs)
+```
+### Step 2: Create Persistent Volume Claims (PVCs)
 
 Nextcloud PVC:
-
+```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -32,9 +32,10 @@ spec:
   resources:
     requests:
       storage: 10Gi
-
+```
 PostgreSQL PVC:
 
+```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -46,16 +47,19 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
+```
 Apply:
-
+```
 kubectl apply -f nextcloud-pvc.yaml
+```
+```
 kubectl apply -f postgres-pvc.yaml
+```
 
-Step 3: Deploy PostgreSQL
+### Step 3: Deploy PostgreSQL
 
 Deployment:
-
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -90,9 +94,9 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
-
+```
 Service:
-
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -105,16 +109,20 @@ spec:
   selector:
     app: postgres
   type: ClusterIP
-
+```
 Apply:
-
+```
 kubectl apply -f postgres-deployment.yaml
+```
+```
 kubectl apply -f postgres-service.yaml
+```
 
-Step 4: Deploy Nextcloud
+### Step 4: Deploy Nextcloud
 
 Deployment:
 
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -151,9 +159,9 @@ spec:
         - name: nextcloud-storage
           persistentVolumeClaim:
             claimName: nextcloud-pvc
-
+```
 Service:
-
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -166,27 +174,30 @@ spec:
   selector:
     app: nextcloud
   type: ClusterIP
-
+```
 Apply:
-
+```
 kubectl apply -f nextcloud-deployment.yaml
+```
+```
 kubectl apply -f nextcloud-service.yaml
+```
 
-Step 5: (Optional) Expose Nextcloud Externally
+### Step 5: (Optional) Expose Nextcloud Externally
 
 Option 1: NodePort
-
+```yaml
 spec:
   type: NodePort
   ports:
     - port: 80
       targetPort: 80
       nodePort: 30080
-
+```
 Option 2: Ingress (Recommended for Production)
 
 Make sure you have an ingress controller installed (like nginx).
-
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -206,12 +217,13 @@ spec:
                 name: nextcloud
                 port:
                   number: 80
-
+```
 Apply:
-
+```
 kubectl apply -f nextcloud-ingress.yaml
+```
 
-Step 6: Access Nextcloud
+### Step 6: Access Nextcloud
 
 ✅ If using NodePort:Access via: http://<NodeIP>:30080
 
