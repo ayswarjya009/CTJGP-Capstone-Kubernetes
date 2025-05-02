@@ -22,5 +22,6 @@ localhost ansible_connection = local
 ## Docker & Kubernetes Task:
 
 ### Problem Statement: 
-Build a docker image to use the python api and push it to the DockerHub. 
+1. Build a docker image to use the python api and push it to the DockerHub. 
 Create a pod and nodeport service with that Docker image.
+2. Two Tier Architecture: Deploy Nextcloud with PostgreSQL on Kubernetes
