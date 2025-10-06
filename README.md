@@ -55,7 +55,7 @@ cd lab
 ```
 vi main.tf
 ```
-Copy and post the eblow configuration
+Copy and post the below configuration
 ```
 provider "aws" {
   profile = "default" # This line is not mandatory.
@@ -96,7 +96,7 @@ resource "local_file" "mykey_public" {
 
 #Creating the security Group and enabling port 22 for ssh
 resource "aws_security_group" "terraform_sg" {
-  name        = "sirin-allow-ssh"
+  name        = "capstone-allow-ssh"
   description = "security group that allows ssh and all egress traffic"
   egress {
     from_port   = 0
@@ -111,7 +111,7 @@ resource "aws_security_group" "terraform_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "sirin-allow-ssh"
+    Name = "capstone-allow-ssh"
   }
 }
 ```
