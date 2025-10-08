@@ -131,3 +131,57 @@ Once the resources are created, login into the newly created Instance using the 
 ```
 ssh -i "capstone-key" ubuntu@IP
 ```
+
+## Ansible Tasks:
+
+### Problem Statement: 
+
+Once you have created a new instance using Terraform (as part of Terraform task), ssh into that instance and install Ansible in it. After that, you have to install httpd webserver in the managed node. You do not have separate managed nodes. So use your ansible workstation itself as the managed node by adding the below line in your host inventory file:
+localhost ansible_connection = local
+
+#### Steps:
+Install ansible using the following commands
+```
+sudo apt update
+```
+```
+sudo apt install python3 python3-pip wget -y
+```
+```
+sudo pip3 install boto boto3 ansible
+```
+```
+ansible --version
+```
+
+Create a inventory in the location /etc/ansible/hosts and add the below
+```
+localhost ansible_connection=local
+```
+Create a directory
+```
+mkdir ansible-lab && cd ansible-lab
+```
+```
+vi playbook.yaml
+```
+```
+- name: This play will install httpd web servers on all the hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Task1 will install web-server
+      apt:
+        name: apache2
+        update_cache: yes
+        state: latest
+    - name: Task2 will start the web-server
+      service:
+        name: apache2
+        state: started
+```
+Execute the playbook
+```
+ansible-playbook playbook.yaml
+```
+Access the webserver on the Ip of the same machine on port 80
